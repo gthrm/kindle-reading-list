@@ -11,6 +11,11 @@ export async function middleware(request: NextRequest) {
     "/api/auth/register",
     "/api/auth/logout",
     "/api/user/",
+    "/api/public/",
+  ];
+
+  const publicReadingApiPaths = [
+    "/api/public/reading-lists/",
   ];
 
   const { pathname } = request.nextUrl;
@@ -22,10 +27,13 @@ export async function middleware(request: NextRequest) {
   const isApiAuthExempt = apiAuthExemptPaths.some((path) =>
     pathname.startsWith(path)
   );
+  const isPublicReadingApi = publicReadingApiPaths.some((path) =>
+    pathname.startsWith(path)
+  );
   const isPublicReadingList =
     pathname.match(/^\/r\/[a-zA-Z0-9_-]+$/) && request.method === "GET";
 
-  if (isPublicPath || isApiAuthExempt || isPublicReadingList) {
+  if (isPublicPath || isApiAuthExempt || isPublicReadingList || isPublicReadingApi) {
     console.log("Middleware: Public path or exempt API, allowing access");
     return NextResponse.next();
   }
