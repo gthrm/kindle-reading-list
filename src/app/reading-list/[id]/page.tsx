@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 
 interface Category {
   id: string;
@@ -536,12 +535,10 @@ export default function EditReadingList() {
                       <div className="flex items-start">
                         {article.imageUrl ? (
                           <div className="flex-shrink-0 h-16 w-16 mr-4">
-                            <Image
+                            <img
                               src={article.imageUrl}
                               alt=""
-                              className="object-cover rounded"
-                              width={64}
-                              height={64}
+                              className="h-16 w-16 object-cover rounded"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src = "/placeholder-image.svg";
