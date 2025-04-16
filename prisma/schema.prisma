@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String        @id @default(cuid())
+  username    String        @unique
+  password    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  readingList ReadingList?
+}
+
+model ReadingList {
+  id         String     @id @default(cuid())
+  name       String     @default("My Reading List")
+  accessCode String?
+  isPublic   Boolean    @default(false)
+  userId     String     @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  articles   Article[]
+  categories Category[]
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id            String      @id @default(cuid())
+  name          String
+  readingListId String
+  readingList   ReadingList @relation(fields: [readingListId], references: [id], onDelete: Cascade)
+  articles      Article[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Article {
+  id            String      @id @default(cuid())
+  url           String
+  title         String?
+  description   String?
+  imageUrl      String?
+  readingListId String
+  isRead        Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  readingList   ReadingList @relation(fields: [readingListId], references: [id], onDelete: Cascade)
+  categories    Category[]
+}
