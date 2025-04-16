@@ -20,7 +20,9 @@ export interface JwtPayload {
 }
 
 // Функция для верификации JWT токена
-export function verifyToken<T extends JwtPayload = JwtPayload>(token: string): T {
+export function verifyToken<T extends JwtPayload = JwtPayload>(
+  token: string
+): T {
   const secret = getJwtSecret();
   return verify(token, secret) as T;
 }
