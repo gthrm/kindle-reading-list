@@ -27,6 +27,9 @@ interface ReadingList {
   articles: Article[];
   categories: Category[];
   username: string;
+  user?: {
+    username: string;
+  };
 }
 
 export default function EditReadingList() {
@@ -62,14 +65,15 @@ export default function EditReadingList() {
     const fetchReadingList = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch(`/api/reading-lists`);
+        const res = await fetch(`/api/reading-lists/${listId}`);
         if (!res.ok) throw new Error("Ошибка загрузки данных коллекции");
 
         const data = await res.json();
         console.log("Загружены данные коллекции:", {
           name: data.readingList.name,
           articlesCount: data.readingList.articles?.length || 0,
-          categories: data.readingList.categories?.length || 0
+          categories: data.readingList.categories?.length || 0,
+          username: data.readingList.username
         });
         
         setReadingList(data.readingList);
@@ -512,8 +516,8 @@ export default function EditReadingList() {
                 <Link
                   href={
                     readingList.isPublic
-                      ? `/r/${readingList.username}`
-                      : `/r/${readingList.username}?code=${readingList.accessCode}`
+                      ? `/r/${readingList?.user?.username || readingList.username || 'view'}`
+                      : `/r/${readingList?.user?.username || readingList.username || 'view'}?code=${readingList.accessCode}`
                   }
                   className="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
                   target="_blank"

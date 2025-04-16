@@ -39,9 +39,18 @@ export async function GET(
         id: readingListId,
       },
       include: {
+        user: {
+          select: {
+            username: true,
+          }
+        },
         articles: {
           orderBy: { createdAt: 'desc' },
+          include: {
+            categories: true
+          }
         },
+        categories: true
       },
     });
 
@@ -142,9 +151,18 @@ export async function PATCH(
         accessCode: accessCode || null,
       },
       include: {
+        user: {
+          select: {
+            username: true,
+          }
+        },
         articles: {
           orderBy: { createdAt: "desc" },
+          include: {
+            categories: true
+          }
         },
+        categories: true
       },
     });
 
