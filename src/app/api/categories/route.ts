@@ -146,4 +146,71 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+}
+
+// Удаление категории
+export async function DELETE(request: Request) {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json(
+        { message: "Not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    // Verify token
+    const decoded = verify(token, process.env.NEXTAUTH_SECRET!) as {
+      id: string;
+    };
+
+    // Получаем ID категории из строки запроса
+    const { searchParams } = new URL(request.url);
+    const categoryId = searchParams.get('id');
+
+    if (!categoryId) {
+      return NextResponse.json(
+        { message: "Category ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Находим категорию
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+      include: { readingList: true }
+    });
+
+    if (!category) {
+      return NextResponse.json(
+        { message: "Category not found" },
+        { status: 404 }
+      );
+    }
+
+    // Проверяем, что категория принадлежит пользователю
+    if (category.readingList.userId !== decoded.id) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 403 }
+      );
+    }
+
+    // Удаляем категорию
+    await prisma.category.delete({
+      where: { id: categoryId }
+    });
+
+    return NextResponse.json({
+      message: "Category deleted successfully"
+    });
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    return NextResponse.json(
+      { message: "Failed to delete category" },
+      { status: 500 }
+    );
+  }
 } 

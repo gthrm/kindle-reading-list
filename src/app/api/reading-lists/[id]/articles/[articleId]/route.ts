@@ -6,9 +6,10 @@ import prisma from "@/lib/prisma";
 // Обновление статьи
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string; articleId: string } }
+  { params }: { params: Promise<{ id: string; articleId: string }> }
 ) {
   try {
+    const { articleId } = await params;
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
@@ -39,7 +40,7 @@ export async function PATCH(
 
     // Проверяем, что статья принадлежит пользователю
     const article = await prisma.article.findUnique({
-      where: { id: (await params).articleId },
+      where: { id: articleId },
       include: { readingList: true, categories: true },
     });
 
@@ -92,7 +93,7 @@ export async function PATCH(
 
     // Обновляем статью
     const updatedArticle = await prisma.article.update({
-      where: { id: (await params).articleId },
+      where: { id: articleId },
       data: {
         ...updateData,
         ...categoriesConnect,
@@ -118,9 +119,10 @@ export async function PATCH(
 // Удаление статьи
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string; articleId: string } }
+  { params }: { params: Promise<{ id: string; articleId: string }> }
 ) {
   try {
+    const { articleId } = await params;
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
@@ -151,7 +153,7 @@ export async function DELETE(
 
     // Проверяем, что статья принадлежит пользователю
     const article = await prisma.article.findUnique({
-      where: { id: (await params).articleId },
+      where: { id: articleId },
       include: { readingList: true },
     });
 
@@ -168,7 +170,7 @@ export async function DELETE(
 
     // Удаляем статью
     await prisma.article.delete({
-      where: { id: (await params).articleId },
+      where: { id: articleId },
     });
 
     return NextResponse.json({

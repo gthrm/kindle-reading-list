@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Получаем код доступа из URL если есть
@@ -11,7 +11,7 @@ export async function GET(
     const accessCode = searchParams.get('code')
     
     // Получаем ID списка или имя пользователя из параметров
-    const idOrUsername = (await params).id
+    const { id: idOrUsername } = await params
     
     // Сначала пробуем найти пользователя с таким именем
     const user = await prisma.user.findUnique({

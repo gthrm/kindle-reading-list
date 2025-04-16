@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma'
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string; articleId: string } }
+  { params }: { params: Promise<{ id: string; articleId: string }> }
 ) {
   try {
     // Получаем код доступа из тела запроса
@@ -11,8 +11,7 @@ export async function POST(
     const { accessCode } = body
     
     // Получаем ID списка и статьи из параметров
-    const readingListId = params.id
-    const articleId = params.articleId
+    const { id: readingListId, articleId } = await params
     
     // Ищем список чтения
     const readingList = await prisma.readingList.findUnique({

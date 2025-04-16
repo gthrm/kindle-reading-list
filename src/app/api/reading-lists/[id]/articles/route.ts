@@ -6,7 +6,7 @@ import { getUrlMetadata } from "@/lib/urlMetadata";
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies();
@@ -43,8 +43,7 @@ export async function POST(
     }
 
     // Получаем ID чтения из параметров URL
-    const p = await params;
-    const readingListId = p.id;
+    const { id: readingListId } = await params;
 
     // Проверяем, что список чтения принадлежит пользователю
     const readingList = await prisma.readingList.findUnique({

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function Login() {
+// Компонент для рендеринга контента с доступом к параметрам URL
+function LoginContent() {
   const searchParams = useSearchParams();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -175,5 +176,14 @@ export default function Login() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Обертка с Suspense для хуков навигации
+export default function Login() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center">Загрузка...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

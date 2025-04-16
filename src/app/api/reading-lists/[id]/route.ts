@@ -6,7 +6,7 @@ import { jwtVerify } from "jose";
 // Get a specific reading list
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies();
@@ -31,7 +31,7 @@ export async function GET(
     const decoded = payload as { id: string; username: string };
 
     // Получаем ID из параметров URL
-    const readingListId = (await params).id;
+    const { id: readingListId } = await params;
 
     // Находим список чтения
     const readingList = await prisma.readingList.findUnique({
@@ -73,7 +73,7 @@ export async function GET(
 // Update a reading list
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies();
@@ -109,7 +109,7 @@ export async function PATCH(
     }
 
     // Получаем ID из параметров URL
-    const readingListId = (await params).id;
+    const { id: readingListId } = await params;
 
     // Находим список чтения
     const readingList = await prisma.readingList.findUnique({
@@ -165,7 +165,7 @@ export async function PATCH(
 // Delete a reading list
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies();
@@ -190,7 +190,7 @@ export async function DELETE(
     const decoded = payload as { id: string; username: string };
 
     // Получаем ID из параметров URL
-    const readingListId = (await params).id;
+    const { id: readingListId } = await params;
 
     // Находим список чтения
     const readingList = await prisma.readingList.findUnique({

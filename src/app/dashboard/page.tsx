@@ -191,7 +191,7 @@ export default function Dashboard() {
     if (!confirm('Вы уверены, что хотите удалить эту категорию? Статьи в этой категории не будут удалены.')) return
     
     try {
-      const res = await fetch(`/api/categories/${categoryId}`, {
+      const res = await fetch(`/api/categories?id=${categoryId}`, {
         method: 'DELETE',
       })
       

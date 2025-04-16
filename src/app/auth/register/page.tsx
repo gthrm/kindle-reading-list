@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-export default function Register() {
+// Компонент для рендеринга контента с доступом к хуку useRouter
+function RegisterContent() {
   const router = useRouter()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -131,5 +132,14 @@ export default function Register() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Обертка с Suspense для хуков навигации
+export default function Register() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center">Загрузка...</div>}>
+      <RegisterContent />
+    </Suspense>
   )
 } 
