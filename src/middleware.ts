@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
+import { getJwtSecret } from "./lib/auth";
 
 export async function middleware(request: NextRequest) {
   const publicPaths = ["/", "/auth/login", "/auth/register", "/r"];
@@ -9,13 +10,15 @@ export async function middleware(request: NextRequest) {
     "/api/auth/login",
     "/api/auth/register",
     "/api/auth/logout",
-    "/api/user/"
+    "/api/user/",
   ];
 
   const { pathname } = request.nextUrl;
   console.log("Middleware: Processing request for path:", pathname);
 
-  const isPublicPath = publicPaths.some((path) => pathname === path || pathname.startsWith(path + "/"));
+  const isPublicPath = publicPaths.some(
+    (path) => pathname === path || pathname.startsWith(path + "/")
+  );
   const isApiAuthExempt = apiAuthExemptPaths.some((path) =>
     pathname.startsWith(path)
   );
@@ -42,21 +45,16 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    const secret = process.env.NEXTAUTH_SECRET;
+    const secret = getJwtSecret();
     console.log(
       "Middleware: Using JWT_SECRET:",
       secret ? `${secret.substring(0, 3)}...` : "undefined"
     );
 
-    if (!secret) {
-      console.error("Middleware: JWT secret is not set");
-      throw new Error("JWT secret is not set");
-    }
-
     // Используем jose вместо jsonwebtoken для совместимости с Edge Runtime
     const textEncoder = new TextEncoder();
     const secretKey = textEncoder.encode(secret);
-    
+
     await jwtVerify(token, secretKey);
     console.log("Middleware: Token verification successful");
     return NextResponse.next();

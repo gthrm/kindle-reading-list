@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verify } from "jsonwebtoken";
 import prisma from "@/lib/prisma";
+import { verifyToken } from "@/lib/auth";
 
 // Типы для работы с результатами SQL запросов
 interface CategoryWithArticleCount {
@@ -9,7 +9,7 @@ interface CategoryWithArticleCount {
   name: string;
   createdAt: Date;
   updatedAt: Date;
-  articleCount: string | number;
+  articleCount: bigint;
 }
 
 // Получение всех категорий пользователя
@@ -26,9 +26,7 @@ export async function GET() {
     }
 
     // Verify token
-    const decoded = verify(token, process.env.NEXTAUTH_SECRET!) as {
-      id: string;
-    };
+    const decoded = verifyToken(token);
 
     // Находим коллекцию пользователя
     const readingList = await prisma.readingList.findFirst({
@@ -79,9 +77,7 @@ export async function POST(request: Request) {
     }
 
     // Verify token
-    const decoded = verify(token, process.env.NEXTAUTH_SECRET!) as {
-      id: string;
-    };
+    const decoded = verifyToken(token);
 
     // Получаем данные из запроса
     const { name } = await request.json();
@@ -162,9 +158,7 @@ export async function DELETE(request: Request) {
     }
 
     // Verify token
-    const decoded = verify(token, process.env.NEXTAUTH_SECRET!) as {
-      id: string;
-    };
+    const decoded = verifyToken(token);
 
     // Получаем ID категории из строки запроса
     const { searchParams } = new URL(request.url);

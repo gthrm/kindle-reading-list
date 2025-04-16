@@ -1,9 +1,30 @@
-// Экспортируем константу для использования в других местах
-export const JWT_SECRET = process.env.NEXTAUTH_SECRET;
+import { verify } from "jsonwebtoken";
 
-console.log("JWT_SECRET", JWT_SECRET);
+// Функция для получения секретного ключа
+export function getJwtSecret() {
+  if (!process.env.NEXTAUTH_SECRET) {
+    throw new Error(
+      "Переменная окружения NEXTAUTH_SECRET не настроена. " +
+        "Пожалуйста, добавьте её в .env или настройки Vercel."
+    );
+  }
 
-// Настройки cookie для токена
+  return process.env.NEXTAUTH_SECRET;
+}
+
+// Базовый интерфейс для JWT токена
+export interface JwtPayload {
+  id: string;
+  username?: string;
+  [key: string]: string | number | boolean | undefined;
+}
+
+// Функция для верификации JWT токена
+export function verifyToken<T extends JwtPayload = JwtPayload>(token: string): T {
+  const secret = getJwtSecret();
+  return verify(token, secret) as T;
+}
+
 export const getTokenCookieOptions = () => {
   const isProduction = process.env.NODE_ENV === "production";
   return {

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { SignJWT } from "jose";
-import { getTokenCookieOptions } from "@/lib/auth";
+import { getTokenCookieOptions, getJwtSecret } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
@@ -40,20 +40,17 @@ export async function POST(request: Request) {
 
     console.log("API/login: Authentication successful, creating token...");
 
-    // Получаем секретный ключ напрямую из переменных окружения
-    const secret = process.env.NEXTAUTH_SECRET;
-    if (!secret) {
-      throw new Error('JWT secret is not set');
-    }
-    
+    // Получаем секретный ключ
+    const secret = getJwtSecret();
+
     // Используем jose для создания токена
     const textEncoder = new TextEncoder();
     const secretKey = textEncoder.encode(secret);
-    
+
     const token = await new SignJWT({ id: user.id, username: user.username })
-      .setProtectedHeader({ alg: 'HS256' })
+      .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
-      .setExpirationTime('7d')
+      .setExpirationTime("7d")
       .sign(secretKey);
 
     console.log("API/login: Token created successfully");
