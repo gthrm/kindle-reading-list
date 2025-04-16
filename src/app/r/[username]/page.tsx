@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Category {
   id: string;
@@ -260,10 +261,12 @@ export default function PublicReadingList() {
 
                     {article.imageUrl ? (
                       <div className="ml-4 w-24 h-24 flex-shrink-0">
-                        <img
+                        <Image
                           src={article.imageUrl}
                           alt={article.title || "Thumbnail"}
-                          className="w-full h-full object-cover rounded"
+                          className="object-cover rounded"
+                          width={96}
+                          height={96}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.src = "/placeholder-image.svg";
