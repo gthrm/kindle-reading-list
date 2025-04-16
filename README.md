@@ -14,17 +14,20 @@
 ### Локальная разработка
 
 1. Клонируйте репозиторий:
+
 ```bash
 git clone https://github.com/your-username/kindle-reading-list.git
 cd kindle-reading-list
 ```
 
 2. Установите зависимости:
+
 ```bash
 npm install
 ```
 
 3. Создайте файл `.env.local` и добавьте в него следующие переменные:
+
 ```
 # Секретный ключ для подписи JWT токенов
 NEXTAUTH_SECRET=your-jwt-secret
@@ -34,11 +37,13 @@ DATABASE_URL="postgresql://username:password@localhost:5432/kindle_reading_list"
 ```
 
 4. Примените миграции и сгенерируйте Prisma Client:
+
 ```bash
 npx prisma migrate dev
 ```
 
 5. Запустите сервер разработки:
+
 ```bash
 npm run dev
 ```
@@ -46,18 +51,23 @@ npm run dev
 ### Настройка базы данных
 
 #### Локальная PostgreSQL
+
 1. Убедитесь, что PostgreSQL установлен и запущен
 2. Создайте базу данных:
+
 ```bash
 createdb kindle_reading_list
 ```
+
 3. Настройте URL базы данных в `.env.local`
 
 #### Neon.tech (облачная PostgreSQL)
+
 1. Создайте аккаунт на [Neon.tech](https://neon.tech/)
 2. Создайте новый проект и базу данных
 3. Получите URL подключения и добавьте его в `.env.local`
 4. Применить миграции:
+
 ```bash
 npx prisma migrate deploy
 ```
