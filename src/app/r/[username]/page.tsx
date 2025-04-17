@@ -12,38 +12,36 @@ function AccessCodeForm({
   error: string;
 }) {
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4">
-      <div className="max-w-5xl mx-auto">
-        <div className="bg-white shadow rounded-lg p-6">
-          <h1 className="text-xl font-semibold text-red-600 mb-4">Ошибка</h1>
-          <p className="mb-4">{error}</p>
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <div style={{ padding: "20px", border: "1px solid #ccc", backgroundColor: "#fff" }}>
+        <h1 style={{ fontSize: "24px", color: "#c00", marginBottom: "16px" }}>Ошибка</h1>
+        <p style={{ marginBottom: "16px" }}>{error}</p>
 
-          <form
-            action={`/api/public/reading-lists/${username}/access`}
-            method="post"
-          >
-            <div className="mt-4">
-              <input
-                type="text"
-                name="code"
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Введите код доступа"
-                required
-              />
-              <button
-                type="submit"
-                className="mt-2 w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Отправить
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-6">
-            <Link href="/" className="text-blue-600 hover:text-blue-800">
-              Вернуться на главную
-            </Link>
+        <form
+          action={`/api/public/reading-lists/${username}/access`}
+          method="post"
+        >
+          <div style={{ marginTop: "16px" }}>
+            <input
+              type="text"
+              name="code"
+              style={{ width: "100%", padding: "8px", border: "1px solid #ccc", marginBottom: "8px" }}
+              placeholder="Введите код доступа"
+              required
+            />
+            <button
+              type="submit"
+              style={{ width: "100%", padding: "8px", backgroundColor: "#00f", color: "#fff", border: "none", cursor: "pointer" }}
+            >
+              Отправить
+            </button>
           </div>
+        </form>
+
+        <div style={{ marginTop: "20px" }}>
+          <Link href="/" style={{ color: "#00f", textDecoration: "underline" }}>
+            Вернуться на главную
+          </Link>
         </div>
       </div>
     </div>
@@ -53,16 +51,14 @@ function AccessCodeForm({
 // Отображение ошибки
 function ErrorState({ error }: { error: string }) {
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4">
-      <div className="max-w-5xl mx-auto">
-        <div className="bg-white shadow rounded-lg p-6 text-center">
-          <h1 className="text-xl font-semibold text-red-600 mb-4">Ошибка</h1>
-          <p>{error}</p>
-          <div className="mt-6">
-            <Link href="/" className="text-blue-600 hover:text-blue-800">
-              Вернуться на главную
-            </Link>
-          </div>
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <div style={{ padding: "20px", border: "1px solid #ccc", backgroundColor: "#fff", textAlign: "center" }}>
+        <h1 style={{ fontSize: "24px", color: "#c00", marginBottom: "16px" }}>Ошибка</h1>
+        <p>{error}</p>
+        <div style={{ marginTop: "20px" }}>
+          <Link href="/" style={{ color: "#00f", textDecoration: "underline" }}>
+            Вернуться на главную
+          </Link>
         </div>
       </div>
     </div>
@@ -157,149 +153,143 @@ export default async function PublicReadingList({
       updatedAt: readingList.updatedAt.toISOString(),
     };
 
-    // Отображаем список чтения
+    // Отображаем список чтения - упрощенная версия для старых браузеров
     return (
-      <div className="min-h-screen bg-slate-50 py-8 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="bg-white shadow rounded-lg p-6">
-            <div className="flex justify-between items-start mb-6">
+      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
+        <div style={{ padding: "20px", border: "1px solid #ccc", backgroundColor: "#fff" }}>
+          <div style={{ marginBottom: "24px" }}>
+            <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#000", marginBottom: "8px" }}>
+              {readingListData.name}
+            </h1>
+            <p style={{ color: "#333", marginBottom: "8px" }}>
+              Коллекция пользователя <span style={{ fontWeight: "bold" }}>{readingListData.username}</span>
+            </p>
+            <p style={{ fontSize: "14px", color: "#555" }}>
+              {readingListData.articleCount} статей • {readingListData.categoryCount} категорий
+            </p>
+          </div>
+
+          {readingListData.categories.length > 0 && (
+            <div style={{ marginBottom: "24px" }}>
+              <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#000", marginBottom: "12px" }}>
+                Категории
+              </h2>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  {readingListData.name}
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  Коллекция пользователя{" "}
-                  <span className="font-medium">
-                    {readingListData.username}
-                  </span>
-                </p>
-                <p className="text-sm text-gray-500 mt-2">
-                  {readingListData.articleCount} статей •{" "}
-                  {readingListData.categoryCount} категорий
-                </p>
-              </div>
-            </div>
+                <Link
+                  href={`/r/${username}${accessCode ? `?code=${accessCode}` : ""}`}
+                  style={{ 
+                    display: "inline-block", 
+                    margin: "0 8px 8px 0", 
+                    padding: "4px 12px", 
+                    border: "1px solid #ccc",
+                    backgroundColor: !selectedCategory ? "#e6f0ff" : "#f5f5f5",
+                    color: !selectedCategory ? "#0033cc" : "#333",
+                    textDecoration: "none"
+                  }}
+                >
+                  Все ({readingListData.articleCount})
+                </Link>
 
-            {readingListData.categories.length > 0 && (
-              <div className="mb-6">
-                <h2 className="text-lg font-medium text-gray-800 mb-2">
-                  Категории
-                </h2>
-                <div className="flex flex-wrap gap-2">
+                {readingListData.categories.map((category) => (
                   <Link
-                    href={`/r/${username}${
-                      accessCode ? `?code=${accessCode}` : ""
-                    }`}
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      !selectedCategory
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-gray-100 text-gray-800 hover:bg-gray-200"
-                    }`}
+                    key={category.id}
+                    href={`/r/${username}?${accessCode ? `code=${accessCode}&` : ""}category=${category.id}`}
+                    style={{ 
+                      display: "inline-block", 
+                      margin: "0 8px 8px 0", 
+                      padding: "4px 12px", 
+                      border: "1px solid #ccc",
+                      backgroundColor: selectedCategory === category.id ? "#e6f0ff" : "#f5f5f5",
+                      color: selectedCategory === category.id ? "#0033cc" : "#333",
+                      textDecoration: "none"
+                    }}
                   >
-                    Все ({readingListData.articleCount})
+                    {category.name} ({category.articleCount})
                   </Link>
-
-                  {readingListData.categories.map((category) => (
-                    <Link
-                      key={category.id}
-                      href={`/r/${username}?${
-                        accessCode ? `code=${accessCode}&` : ""
-                      }category=${category.id}`}
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        selectedCategory === category.id
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-100 text-gray-800 hover:bg-gray-200"
-                      }`}
-                    >
-                      {category.name} ({category.articleCount})
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {filteredArticles.length > 0 ? (
-              <div className="space-y-6">
-                {filteredArticles.map((article) => (
-                  <div
-                    key={article.id}
-                    className="border rounded-lg p-4 hover:shadow-md transition"
-                  >
-                    <div className="flex justify-between">
-                      <div className="flex-1">
-                        <a
-                          href={article.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block"
-                        >
-                          <h3 className="text-lg font-medium text-blue-700 hover:text-blue-900 mb-1">
-                            {article.title || "Без названия"}
-                          </h3>
-                          <p className="text-sm text-gray-600 mb-2">
-                            {article.url}
-                          </p>
-                          {article.description && (
-                            <p className="text-gray-700 mb-2">
-                              {article.description}
-                            </p>
-                          )}
-                        </a>
-
-                        {article.categories.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {article.categories.map((cat) => (
-                              <span
-                                key={cat.id}
-                                className="px-2 py-0.5 bg-gray-100 text-xs rounded-full text-gray-600"
-                              >
-                                {cat.name}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {article.imageUrl ? (
-                        <div className="ml-4 w-24 h-24 flex-shrink-0">
-                          <img
-                            src={article.imageUrl}
-                            alt={article.title || "Thumbnail"}
-                            className="w-full h-full object-cover rounded"
-                          />
-                        </div>
-                      ) : (
-                        <div className="ml-4 w-24 h-24 flex-shrink-0 bg-gray-100 rounded flex items-center justify-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-10 w-10 text-gray-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={1}
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                  </div>
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-10">
-                <p className="text-gray-600">
-                  {selectedCategory
-                    ? "В выбранной категории нет статей"
-                    : "В этой коллекции пока нет статей"}
-                </p>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {filteredArticles.length > 0 ? (
+            <div>
+              {filteredArticles.map((article) => (
+                <div
+                  key={article.id}
+                  style={{ 
+                    padding: "16px", 
+                    marginBottom: "16px", 
+                    border: "1px solid #ccc"
+                  }}
+                >
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ 
+                      color: "#0033cc", 
+                      fontSize: "18px", 
+                      fontWeight: "bold", 
+                      textDecoration: "underline",
+                      display: "block",
+                      marginBottom: "8px"
+                    }}
+                  >
+                    {article.title || "Без названия"}
+                  </a>
+                  
+                  <p style={{ fontSize: "14px", color: "#555", marginBottom: "8px", wordBreak: "break-all" }}>
+                    {article.url}
+                  </p>
+                  
+                  {article.description && (
+                    <p style={{ color: "#333", marginBottom: "12px" }}>
+                      {article.description}
+                    </p>
+                  )}
+
+                  {article.categories.length > 0 && (
+                    <div style={{ marginTop: "12px" }}>
+                      {article.categories.map((cat) => (
+                        <span
+                          key={cat.id}
+                          style={{ 
+                            display: "inline-block", 
+                            margin: "0 4px 4px 0", 
+                            padding: "2px 8px", 
+                            backgroundColor: "#f5f5f5", 
+                            border: "1px solid #ddd",
+                            fontSize: "12px",
+                            color: "#555" 
+                          }}
+                        >
+                          {cat.name}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {article.imageUrl && (
+                    <div style={{ marginTop: "16px", border: "1px solid #ddd" }}>
+                      <img
+                        src={article.imageUrl}
+                        alt={article.title || "Изображение статьи"}
+                        style={{ maxWidth: "100%", height: "auto" }}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", padding: "40px 0" }}>
+              <p style={{ color: "#555" }}>
+                {selectedCategory
+                  ? "В выбранной категории нет статей"
+                  : "В этой коллекции пока нет статей"}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     );
