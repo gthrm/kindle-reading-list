@@ -4,20 +4,19 @@ import prisma from "@/lib/prisma";
 // Обработчик формы для ввода кода доступа
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ id: string; articleId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id: username } = await params;
-
   try {
+    // Получаем ID из параметров URL
+    const { id: username } = await params;
+    
     // Получаем данные формы
     const formData = await request.formData();
     const code = formData.get("code") as string;
 
     if (!code) {
       // Редирект обратно с ошибкой
-      return NextResponse.redirect(
-        `/r/${username}?error=Код доступа обязателен`
-      );
+      return NextResponse.redirect(new URL(`/r/${username}?error=Код доступа обязателен`, request.url));
     }
 
     // Получаем пользователя по имени
@@ -26,9 +25,7 @@ export async function POST(
     });
 
     if (!user) {
-      return NextResponse.redirect(
-        `/r/${username}?error=Пользователь не найден`
-      );
+      return NextResponse.redirect(new URL(`/r/${username}?error=Пользователь не найден`, request.url));
     }
 
     // Получаем список чтения пользователя
@@ -37,23 +34,20 @@ export async function POST(
     });
 
     if (!readingList) {
-      return NextResponse.redirect(
-        `/r/${username}?error=Список чтения не найден`
-      );
+      return NextResponse.redirect(new URL(`/r/${username}?error=Список чтения не найден`, request.url));
     }
 
     // Проверяем код доступа
     if (readingList.accessCode !== code) {
-      return NextResponse.redirect(`/r/${username}?error=Неверный код доступа`);
+      return NextResponse.redirect(new URL(`/r/${username}?error=Неверный код доступа`, request.url));
     }
 
     // Код верный, перенаправляем с кодом
-    return NextResponse.redirect(`/r/${username}?code=${code}`);
+    return NextResponse.redirect(new URL(`/r/${username}?code=${code}`, request.url));
   } catch (error) {
     console.error("Error verifying access code:", error);
-    // Fallback to using params directly if we can't resolve the promise
-    return NextResponse.redirect(
-      `/r/${username}?error=Произошла ошибка при проверке кода`
-    );
+    
+    // В случае ошибки, нам нужно вернуть юзера на главную
+    return NextResponse.redirect(new URL(`/`, request.url));
   }
 }
