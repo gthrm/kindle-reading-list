@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -9,26 +9,29 @@ export default function Home() {
             Kindle Reading List
           </h1>
           <p className="text-xl text-slate-600 mb-8">
-            Создавайте, управляйте и читайте коллекции ссылок на Kindle просто и удобно.
+            Создавайте, управляйте и читайте коллекции ссылок на Kindle просто и
+            удобно.
           </p>
           <div className="space-y-3">
             <p className="text-lg text-slate-700 mb-2">
-              Быстро добавляйте ссылки с компьютера или телефона, открывайте и читайте их на Kindle без лишних сложностей.
+              Быстро добавляйте ссылки с компьютера или телефона, открывайте и
+              читайте их на Kindle без лишних сложностей.
             </p>
             <p className="text-md text-slate-600 mb-6">
-              Ссылки автоматически парсятся, показывая изображения и описания там, где это возможно.
+              Ссылки автоматически парсятся, показывая изображения и описания
+              там, где это возможно.
             </p>
           </div>
-          
+
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link 
-              href="/auth/register" 
+            <Link
+              href="/auth/register"
               className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-lg hover:shadow-xl"
             >
               Создать аккаунт
             </Link>
-            <Link 
-              href="/auth/login" 
+            <Link
+              href="/auth/login"
               className="w-full sm:w-auto px-8 py-3 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-800 transition shadow-lg hover:shadow-xl"
             >
               Войти
@@ -37,5 +40,5 @@ export default function Home() {
         </div>
       </div>
     </main>
-  )
+  );
 }
