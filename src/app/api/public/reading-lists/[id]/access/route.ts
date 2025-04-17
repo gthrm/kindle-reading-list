@@ -9,14 +9,16 @@ export async function POST(
   try {
     // Получаем ID из параметров URL
     const { id: username } = await params;
-    
+
     // Получаем данные формы
     const formData = await request.formData();
     const code = formData.get("code") as string;
 
     if (!code) {
       // Используем абсолютный URL без использования new URL для совместимости с Kindle
-      return NextResponse.redirect(`/r/${username}?error=Код доступа обязателен`);
+      return NextResponse.redirect(
+        `/r/${username}?error=Код доступа обязателен`
+      );
     }
 
     // Получаем пользователя по имени
@@ -25,7 +27,9 @@ export async function POST(
     });
 
     if (!user) {
-      return NextResponse.redirect(`/r/${username}?error=Пользователь не найден`);
+      return NextResponse.redirect(
+        `/r/${username}?error=Пользователь не найден`
+      );
     }
 
     // Получаем список чтения пользователя
@@ -34,7 +38,9 @@ export async function POST(
     });
 
     if (!readingList) {
-      return NextResponse.redirect(`/r/${username}?error=Список чтения не найден`);
+      return NextResponse.redirect(
+        `/r/${username}?error=Список чтения не найден`
+      );
     }
 
     // Проверяем код доступа
@@ -46,7 +52,7 @@ export async function POST(
     return NextResponse.redirect(`/r/${username}?code=${code}`);
   } catch (error) {
     console.error("Error verifying access code:", error);
-    
+
     // В случае ошибки, нам нужно вернуть юзера на главную
     return NextResponse.redirect(`/`);
   }
