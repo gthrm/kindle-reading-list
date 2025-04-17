@@ -1,9 +1,16 @@
-import { connection } from 'next/server';
-import Link from 'next/link';
-import prisma from '@/lib/prisma';
+import { connection } from "next/server";
+import Link from "next/link";
+import prisma from "@/lib/prisma";
+import { PageProps } from "../../../../.next/types/app/layout";
 
 // Страница для ввода кода доступа
-function AccessCodeForm({ username, error }: { username: string, error: string }) {
+function AccessCodeForm({
+  username,
+  error,
+}: {
+  username: string;
+  error: string;
+}) {
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4">
       <div className="max-w-5xl mx-auto">
@@ -11,7 +18,10 @@ function AccessCodeForm({ username, error }: { username: string, error: string }
           <h1 className="text-xl font-semibold text-red-600 mb-4">Ошибка</h1>
           <p className="mb-4">{error}</p>
 
-          <form action={`/api/public/reading-lists/${username}/access`} method="post">
+          <form
+            action={`/api/public/reading-lists/${username}/access`}
+            method="post"
+          >
             <div className="mt-4">
               <input
                 type="text"
@@ -63,15 +73,12 @@ function ErrorState({ error }: { error: string }) {
 export default async function PublicReadingList({
   params,
   searchParams,
-}: {
-  params: { username: string };
-  searchParams: { code?: string; category?: string };
-}) {
+}: PageProps) {
   await connection();
-  
-  const username = params.username;
-  const accessCode = searchParams.code || "";
-  const selectedCategory = searchParams.category || null;
+
+  const { username } = await params;
+  const accessCode = (await searchParams)?.code || "";
+  const selectedCategory = (await searchParams)?.category || null;
 
   try {
     // Получаем пользователя
@@ -102,18 +109,25 @@ export default async function PublicReadingList({
 
     // Проверяем доступность списка
     if (!readingList.isPublic && !accessCode) {
-      return <AccessCodeForm username={username} error="Требуется код доступа для просмотра этой коллекции" />;
+      return (
+        <AccessCodeForm
+          username={username}
+          error="Требуется код доступа для просмотра этой коллекции"
+        />
+      );
     }
 
     // Если список приватный, проверяем код доступа
     if (!readingList.isPublic && accessCode !== readingList.accessCode) {
-      return <AccessCodeForm username={username} error="Неверный код доступа" />;
+      return (
+        <AccessCodeForm username={username} error="Неверный код доступа" />
+      );
     }
 
     // Подготавливаем данные для отображения
     const articles = readingList.articles;
     const categories = readingList.categories;
-    
+
     // Фильтруем статьи по категории если указана
     const filteredArticles = selectedCategory
       ? articles.filter((article) =>
@@ -155,11 +169,13 @@ export default async function PublicReadingList({
                 </h1>
                 <p className="text-gray-600 mt-1">
                   Коллекция пользователя{" "}
-                  <span className="font-medium">{readingListData.username}</span>
+                  <span className="font-medium">
+                    {readingListData.username}
+                  </span>
                 </p>
                 <p className="text-sm text-gray-500 mt-2">
-                  {readingListData.articleCount} статей • {readingListData.categoryCount}{" "}
-                  категорий
+                  {readingListData.articleCount} статей •{" "}
+                  {readingListData.categoryCount} категорий
                 </p>
               </div>
             </div>
@@ -171,7 +187,9 @@ export default async function PublicReadingList({
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   <Link
-                    href={`/r/${username}${accessCode ? `?code=${accessCode}` : ''}`}
+                    href={`/r/${username}${
+                      accessCode ? `?code=${accessCode}` : ""
+                    }`}
                     className={`px-3 py-1 rounded-full text-sm ${
                       !selectedCategory
                         ? "bg-blue-100 text-blue-800"
@@ -184,7 +202,9 @@ export default async function PublicReadingList({
                   {readingListData.categories.map((category) => (
                     <Link
                       key={category.id}
-                      href={`/r/${username}?${accessCode ? `code=${accessCode}&` : ''}category=${category.id}`}
+                      href={`/r/${username}?${
+                        accessCode ? `code=${accessCode}&` : ""
+                      }category=${category.id}`}
                       className={`px-3 py-1 rounded-full text-sm ${
                         selectedCategory === category.id
                           ? "bg-blue-100 text-blue-800"
