@@ -15,8 +15,8 @@ export async function POST(
     const code = formData.get("code") as string;
 
     if (!code) {
-      // Редирект обратно с ошибкой
-      return NextResponse.redirect(new URL(`/r/${username}?error=Код доступа обязателен`, request.url));
+      // Используем абсолютный URL без использования new URL для совместимости с Kindle
+      return NextResponse.redirect(`/r/${username}?error=Код доступа обязателен`);
     }
 
     // Получаем пользователя по имени
@@ -25,7 +25,7 @@ export async function POST(
     });
 
     if (!user) {
-      return NextResponse.redirect(new URL(`/r/${username}?error=Пользователь не найден`, request.url));
+      return NextResponse.redirect(`/r/${username}?error=Пользователь не найден`);
     }
 
     // Получаем список чтения пользователя
@@ -34,20 +34,20 @@ export async function POST(
     });
 
     if (!readingList) {
-      return NextResponse.redirect(new URL(`/r/${username}?error=Список чтения не найден`, request.url));
+      return NextResponse.redirect(`/r/${username}?error=Список чтения не найден`);
     }
 
     // Проверяем код доступа
     if (readingList.accessCode !== code) {
-      return NextResponse.redirect(new URL(`/r/${username}?error=Неверный код доступа`, request.url));
+      return NextResponse.redirect(`/r/${username}?error=Неверный код доступа`);
     }
 
     // Код верный, перенаправляем с кодом
-    return NextResponse.redirect(new URL(`/r/${username}?code=${code}`, request.url));
+    return NextResponse.redirect(`/r/${username}?code=${code}`);
   } catch (error) {
     console.error("Error verifying access code:", error);
     
     // В случае ошибки, нам нужно вернуть юзера на главную
-    return NextResponse.redirect(new URL(`/`, request.url));
+    return NextResponse.redirect(`/`);
   }
 }
