@@ -123,6 +123,37 @@ export default function PublicReadingList() {
                   onClick={() => {
                     if (code) {
                       router.push(`/r/${collectionId}?code=${code}`);
+                      
+                      const fetchWithCode = async () => {
+                        try {
+                          setIsLoading(true);
+                          const url = `/api/public/reading-lists/${collectionId}?code=${code}`;
+                          const res = await fetch(url);
+                          
+                          if (!res.ok) {
+                            if (res.status === 403) {
+                              setError("Требуется код доступа для просмотра этой коллекции");
+                            } else if (res.status === 404) {
+                              setError("Коллекция не найдена");
+                            } else {
+                              const data = await res.json();
+                              setError(data.message || "Ошибка при загрузке коллекции");
+                            }
+                            return;
+                          }
+                          
+                          const data = await res.json();
+                          setReadingList(data.readingList);
+                          setError("");
+                        } catch (err) {
+                          console.error("Error fetching reading list:", err);
+                          setError("Ошибка при загрузке коллекции");
+                        } finally {
+                          setIsLoading(false);
+                        }
+                      };
+                      
+                      fetchWithCode();
                     }
                   }}
                 >
