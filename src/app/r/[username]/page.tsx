@@ -2,24 +2,6 @@ import { connection } from 'next/server';
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
 
-interface Category {
-  id: string;
-  name: string;
-  articleCount: number;
-}
-
-interface Article {
-  id: string;
-  url: string;
-  title: string | null;
-  description: string | null;
-  imageUrl: string | null;
-  isRead: boolean;
-  createdAt: string;
-  updatedAt: string;
-  categories: { id: string; name: string }[];
-}
-
 // Страница для ввода кода доступа
 function AccessCodeForm({ username, error }: { username: string, error: string }) {
   return (
