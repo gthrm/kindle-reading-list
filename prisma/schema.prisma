@@ -20,7 +20,7 @@ model ReadingList {
   id         String     @id @default(cuid())
   name       String     @default("My Reading List")
   accessCode String?
-  isPublic   Boolean    @default(false)
+  isPublic   Boolean    @default(true)
   userId     String     @unique
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
