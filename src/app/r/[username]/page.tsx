@@ -95,6 +95,9 @@ export default async function PublicReadingList({
           include: {
             categories: true,
           },
+          orderBy: {
+            createdAt: 'desc' // Сортируем статьи по дате создания (сначала новые)
+          }
         },
       },
     });
